@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crypto-X</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    body{
+      background:#0f172a;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      color:white;
+    }
+
+    .container{
+      width:400px;
+      background:#1e293b;
+      padding:30px;
+      border-radius:15px;
+      box-shadow:0 0 20px rgba(0,0,0,0.4);
+    }
+
+    h1{
+      text-align:center;
+      margin-bottom:25px;
+      color:#facc15;
+    }
+
+    .input-group{
+      margin-bottom:20px;
+    }
+
+    label{
+      display:block;
+      margin-bottom:8px;
+      font-size:14px;
+    }
+
+    input, select{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:10px;
+      outline:none;
+      font-size:16px;
+    }
+
+    .btc-display{
+      background:#334155;
+      padding:12px;
+      border-radius:10px;
+      font-size:18px;
+      text-align:center;
+      color:#facc15;
+    }
+
+    .paypal-btn{
+      display:block;
+      width:100%;
+      text-align:center;
+      padding:14px;
+      border-radius:10px;
+      background:#facc15;
+      color:#000;
+      font-size:18px;
+      font-weight:bold;
+      text-decoration:none;
+      transition:0.3s;
+    }
+
+    .paypal-btn:hover{
+      background:#eab308;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Crypto-X</h1>
+
+    <div class="input-group">
+      <label>Select Currency</label>
+      <select id="currency">
+        <option value="USD">USD ($)</option>
+        <option value="EUR">EUR (€)</option>
+        <option value="GBP">GBP (£)</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <label>Amount</label>
+      <input type="number" id="amount" placeholder="Enter amount" />
+    </div>
+
+    <div class="input-group">
+      <label>Bitcoin Equivalent</label>
+      <div class="btc-display" id="btcValue">0 BTC</div>
+    </div>
+
+    <div class="input-group">
+      <label>Bitcoin Address</label>
+      <input type="text" id="btcAddress" placeholder="Enter your BTC address" />
+    </div>
+
+    <!-- Replace with your own website -->
+    <a href="https://myreferraldiscount.blog/" class="paypal-btn">
+      Buy 
+    </a>
+
+  </div>
+
+  <script>
+    // Example BTC prices
+    const btcPrices = {
+      USD: 65000,
+      EUR: 60000,
+      GBP: 52000
+    };
+
+    const amountInput = document.getElementById("amount");
+    const currencySelect = document.getElementById("currency");
+    const btcValue = document.getElementById("btcValue");
+
+    function updateBTC() {
+      const amount = parseFloat(amountInput.value) || 0;
+      const currency = currencySelect.value;
+
+      const btc = amount / btcPrices[currency];
+
+      btcValue.innerText = btc.toFixed(8) + " BTC";
+    }
+
+    amountInput.addEventListener("input", updateBTC);
+    currencySelect.addEventListener("change", updateBTC);
+  </script>
+
+</body>
+</html>
